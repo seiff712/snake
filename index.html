@@ -76,7 +76,6 @@ High: <span id="high">0</span>
 
 <canvas id="c" width="400" height="400"></canvas>
 
-<!-- 🔥 زرار Pause -->
 <button id="pauseBtn" onclick="togglePause()" style="position:absolute; bottom:20px;">
 ⏸ Pause
 </button>
@@ -103,11 +102,14 @@ let interval;
 let obstacles = [];
 let paused = false;
 
+// 🔥 high score
+let high = localStorage.getItem("snakeHigh") || 0;
+
 // sounds
 const eatSound = new Audio("eat.wav");
 const hitSound = new Audio("hit.wav");
 
-// backgrounds
+// backgrounds (نفس الأسماء زي ما هي)
 const backgrounds = [
  "bg1-blur.jpg",
  "b2.jpeg",
@@ -150,7 +152,7 @@ function autoBackgroundSlider(){
  changeBackground(bgIndex);
 }
 
-// 🔥 Pause / Resume
+// pause
 function togglePause(){
  paused = !paused;
  let btn = document.getElementById("pauseBtn");
@@ -267,8 +269,14 @@ function loseLife(){
 
  lives--;
  if(lives<=0){
+
+   if(score > high){
+     localStorage.setItem("snakeHigh", score);
+   }
+
    document.getElementById('gameover').style.display='block';
    document.getElementById('final').innerText='Score: '+score;
+
    clearInterval(interval);
  }
 }
@@ -292,6 +300,10 @@ function draw(){
  document.getElementById('score').innerText=score;
  document.getElementById('level').innerText=level;
  document.getElementById('lives').innerText=lives;
+
+ // 🔥 عرض الهاي سكور
+ document.getElementById('high').innerText =
+   localStorage.getItem("snakeHigh") || 0;
 }
 
 document.addEventListener('keydown',e=>{
@@ -300,7 +312,6 @@ document.addEventListener('keydown',e=>{
  if(e.key==='ArrowLeft' && dx===0){dx=-grid;dy=0}
  if(e.key==='ArrowRight' && dx===0){dx=grid;dy=0}
 
- // 🔥 space يعمل pause + يغير الزرار
  if(e.key === ' '){
    togglePause();
  }
